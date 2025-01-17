@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { fetchUtilisateurs, addUtilisateur } from "../api";
 
 interface Utilisateur {
@@ -12,7 +13,6 @@ const UtilisateurTable: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Fetch utilisateurs on component mount
     useEffect(() => {
         const getUtilisateurs = async () => {
             try {
@@ -28,85 +28,60 @@ const UtilisateurTable: React.FC = () => {
         getUtilisateurs();
     }, []);
 
-    // Handle adding a new utilisateur
     const handleAddUtilisateur = async (utilisateur: { nom: string; email: string }) => {
         try {
             const newUtilisateur = await addUtilisateur(utilisateur);
-            setUtilisateurs([...utilisateurs, newUtilisateur]); // Update the table with the new utilisateur
+            setUtilisateurs([...utilisateurs, newUtilisateur]);
         } catch (err) {
             setError("Failed to add utilisateur");
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
-    }
+    if (loading) return <div className="text-center py-4">Loading...</div>;
+    if (error) return <div className="text-center py-4 text-red-500">{error}</div>;
 
     return (
-        <div className="bg-neutral-100 p-6 rounded-lg shadow-md">
+        <motion.div
+            className="bg-neutral-100 p-4 md:p-6 rounded-lg shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
             <h2 className="text-xl font-semibold mb-4">List of Utilisateurs</h2>
-            <table className="min-w-full bg-white border border-neutral-300 mb-6">
-                <thead>
-                <tr>
-                    <th className="py-2 px-4 border-b">ID</th>
-                    <th className="py-2 px-4 border-b">Nom</th>
-                    <th className="py-2 px-4 border-b">Email</th>
-                </tr>
-                </thead>
-                <tbody>
-                {utilisateurs.map((utilisateur) => (
-                    <tr key={utilisateur.id} className="hover:bg-neutral-50">
-                        <td className="py-2 px-4 border-b">{utilisateur.id}</td>
-                        <td className="py-2 px-4 border-b">{utilisateur.nom}</td>
-                        <td className="py-2 px-4 border-b">{utilisateur.email}</td>
+            <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-neutral-300 mb-6">
+                    <thead>
+                    <tr>
+                        <th className="py-2 px-4 border-b">ID</th>
+                        <th className="py-2 px-4 border-b">Nom</th>
+                        <th className="py-2 px-4 border-b">Email</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <AnimatePresence>
+                        {utilisateurs.map((utilisateur) => (
+                            <motion.tr
+                                key={utilisateur.id}
+                                className="hover:bg-neutral-50"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <td className="py-2 px-4 border-b">{utilisateur.id}</td>
+                                <td className="py-2 px-4 border-b">{utilisateur.nom}</td>
+                                <td className="py-2 px-4 border-b">{utilisateur.email}</td>
+                            </motion.tr>
+                        ))}
+                    </AnimatePresence>
+                    </tbody>
+                </table>
+            </div>
 
-            <h2 className="text-xl font-semibold mb-4">Add a New User</h2>
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.target as HTMLFormElement;
-                    const nom = (form.elements.namedItem("nom") as HTMLInputElement).value;
-                    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-                    handleAddUtilisateur({ nom, email });
-                    form.reset();
-                }}
-                className="space-y-4"
-            >
-                <div>
-                    <label className="block text-sm font-medium text-neutral-700">Name:</label>
-                    <input
-                        type="text"
-                        name="nom"
-                        className="mt-1 block w-full p-2 border border-neutral-300 rounded-md"
-                        required
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-neutral-700">Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        className="mt-1 block w-full p-2 border border-neutral-300 rounded-md"
-                        required
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="bg-neutral-700 text-white px-4 py-2 rounded-md hover:bg-neutral-600"
-                >
-                    Add User
-                </button>
-            </form>
-        </div>
+            <AddUtilisateurForm onAddUtilisateur={handleAddUtilisateur} />
+        </motion.div>
     );
 };
 
 export default UtilisateurTable;
+

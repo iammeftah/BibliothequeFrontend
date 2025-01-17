@@ -1,7 +1,11 @@
 import React, { useState } from "react";
-import { addLivre } from "../api";
+import {AnimatePresence, motion} from "framer-motion";
 
-const AddLivreForm: React.FC = () => {
+interface AddLivreFormProps {
+    onAddLivre: (livre: { titre: string; auteur: string }) => Promise<void>;
+}
+
+const AddLivreForm: React.FC<AddLivreFormProps> = ({ onAddLivre }) => {
     const [titre, setTitre] = useState<string>("");
     const [auteur, setAuteur] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
@@ -10,7 +14,7 @@ const AddLivreForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await addLivre({ titre, auteur });
+            await onAddLivre({ titre, auteur });
             setSuccess(true);
             setError(null);
             setTitre("");
@@ -22,7 +26,12 @@ const AddLivreForm: React.FC = () => {
     };
 
     return (
-        <div className="bg-neutral-100 p-6 rounded-lg shadow-md">
+        <motion.div
+            className="bg-white p-4 rounded-lg shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
             <h2 className="text-xl font-semibold mb-4">Add a New Book</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -45,17 +54,40 @@ const AddLivreForm: React.FC = () => {
                         required
                     />
                 </div>
-                <button
+                <motion.button
                     type="submit"
                     className="bg-neutral-700 text-white px-4 py-2 rounded-md hover:bg-neutral-600"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                 >
                     Add Book
-                </button>
+                </motion.button>
             </form>
-            {success && <p className="mt-4 text-green-600">Book added successfully!</p>}
-            {error && <p className="mt-4 text-red-600">{error}</p>}
-        </div>
+            <AnimatePresence>
+                {success && (
+                    <motion.p
+                        className="mt-4 text-green-600"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                    >
+                        Book added successfully!
+                    </motion.p>
+                )}
+                {error && (
+                    <motion.p
+                        className="mt-4 text-red-600"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                    >
+                        {error}
+                    </motion.p>
+                )}
+            </AnimatePresence>
+        </motion.div>
     );
 };
 
 export default AddLivreForm;
+
