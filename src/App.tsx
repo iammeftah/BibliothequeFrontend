@@ -1,19 +1,24 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import AddLivreForm from "./components/AddLivreForm";
-import AddUtilisateurForm from "./components/AddUtilisateurForm";
-import LoanBookForm from "./components/LoanBookForm";
+import LivreTable from "./components/LivreTable";
+import UtilisateurTable from "./components/UtilisateurTable";
+import PretTable from "./components/PretTable";
 
 const App: React.FC = () => {
     return (
-        <div className="min-h-screen bg-neutral-50">
-            <Navbar />
-            <div className="container mx-auto p-4 space-y-6">
-                <AddLivreForm />
-                <AddUtilisateurForm />
-                <LoanBookForm />
+        <Router>
+            <div className="min-h-screen bg-neutral-50">
+                <Navbar />
+                <div className="container mx-auto p-4">
+                    <Routes>
+                        <Route path="/livres" element={<LivreTable />} />
+                        <Route path="/utilisateurs" element={<UtilisateurTable />} />
+                        <Route path="/prets" element={<PretTable />} />
+                    </Routes>
+                </div>
             </div>
-        </div>
+        </Router>
     );
 };
 
