@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import LivreTable from "./components/LivreTable";
 import UtilisateurTable from "./components/UtilisateurTable";
 import PretTable from "./components/PretTable";
+import Home from "./components/Home";
 
 const App: React.FC = () => {
     return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
                 <Navbar />
                 <div className="container mx-auto p-4">
                     <Routes>
+                        <Route path="/" element={<Home />} />
                         <Route path="/livres" element={<LivreTable />} />
                         <Route path="/utilisateurs" element={<UtilisateurTable />} />
                         <Route path="/prets" element={<PretTable />} />
