@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchPrets, addPret } from "../api";
+import {Loader} from "lucide-react";
 
 interface Pret {
     id: number;
@@ -45,13 +46,17 @@ const PretTable: React.FC = () => {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    if (loading) return (
+        <div className="flex justify-center items-center h-64">
+            <Loader className="animate-spin h-8 w-8 text-neutral-600" />
+        </div>
+    );
 
-    if (error) {
-        return <div>{error}</div>;
-    }
+    if (error) return (
+        <div className="text-center py-4 text-red-500 bg-red-100 rounded-md">
+            <p>{error}</p>
+        </div>
+    );
 
     return (
         <div className="bg-neutral-100 p-6 rounded-lg shadow-md">

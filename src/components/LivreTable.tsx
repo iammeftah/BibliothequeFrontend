@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchLivres, addLivre } from "../api";
 import AddLivreForm from "./AddLivreForm";
+import {Loader} from "lucide-react";
 
 interface Livre {
     id: number;
@@ -38,8 +39,17 @@ const LivreTable: React.FC = () => {
         }
     };
 
-    if (loading) return <div className="text-center py-4">Loading...</div>;
-    if (error) return <div className="text-center py-4 text-red-500">{error}</div>;
+    if (loading) return (
+        <div className="flex justify-center items-center h-64">
+            <Loader className="animate-spin h-8 w-8 text-neutral-600" />
+        </div>
+    );
+
+    if (error) return (
+        <div className="text-center py-4 text-red-500 bg-red-100 rounded-md">
+            <p>{error}</p>
+        </div>
+    );
 
     return (
         <motion.div

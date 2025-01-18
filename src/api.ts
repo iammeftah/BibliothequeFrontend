@@ -1,6 +1,6 @@
-const LIVRE_API_URL = "http://51.120.122.37:8081"; // Livres microservice
-const UTILISATEUR_API_URL = "http://51.120.122.37:8082"; // Utilisateurs microservice
-const PRET_API_URL = "http://51.120.122.37:8083"; // Prets microservice
+const LIVRE_API_URL = "https://bibliothequelivre.onrender.com"; // Livres microservice
+const UTILISATEUR_API_URL = "https://bibliothequeutilisateur.onrender.com"; // Utilisateurs microservice
+const PRET_API_URL = "https://bibliothequepret.onrender.com"; // Prets microservice
 
 // Livres API
 export const fetchLivres = async () => {
